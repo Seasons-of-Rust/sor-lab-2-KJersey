@@ -22,7 +22,7 @@ fn validate_grading_system() {
 
 /// Calculate the grade
 fn calculate_grade(carrots: i32, nuts: i32, seeds: i32) -> i32 {
-    todo!()
+    (carrots + nuts) * (carrots + nuts + seeds)
 }
 
 /// Validate the safety system
@@ -49,7 +49,7 @@ fn calculate_safety_status(
     has_carrot: bool,
     friends_nearby: i32,
 ) -> bool {
-    todo!()
+    !wolves_nearby || day_time || has_carrot || friends_nearby > 3
 }
 
 /// Validate the simulation
@@ -67,7 +67,17 @@ fn validate_simulation() {
 
 /// Simulate the rabbit population
 fn simulate(starting_rabbits: i128) -> i32 {
-    todo!()
+    fn simulate_helper(starting_rabbits: i128, days: i32) -> i32 {
+        match starting_rabbits {
+            1 => days,
+            _ => match starting_rabbits % 2 {
+                0 => simulate_helper(starting_rabbits / 2, days + 1),
+                _ => simulate_helper(3 * starting_rabbits + 1, days + 1)
+            }
+        }
+    }
+
+    simulate_helper(starting_rabbits, 0)
 }
 
 #[cfg(test)]
@@ -86,6 +96,9 @@ mod tests {
     fn test_safety_calculation() {
         assert_eq!(true, calculate_safety_status(false, true, true, 2));
         assert_eq!(false, calculate_safety_status(true, false, false, 0));
+        assert_eq!(true, calculate_safety_status(true, false, true, 0));
+        assert_eq!(false, calculate_safety_status(true, false, false, 3));
+        assert_eq!(true, calculate_safety_status(true, false, false, 4));
         assert_eq!(true, calculate_safety_status(false, true, false, 0));
         assert_eq!(true, calculate_safety_status(false, true, false, 4));
     }
